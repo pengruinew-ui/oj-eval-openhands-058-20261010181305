@@ -102,17 +102,20 @@ private:
     }
     // effectiveness table for the 7 allowed types
     static double typeEffect(const std::string &atk, const std::string &def) {
-        // default 1.0
-        if (atk == def) return 0.5; // same type is resistant
+        // default 1.0 (neutral)
+        // special case: dragon attacks dragon gives 2x
+        if (atk == "dragon" && def == "dragon") return 2.0;
+        // same type resistance (0.5) except dragon handled above
+        if (atk == def) return 0.5;
         // water
         if (atk == "water") {
             if (def == "fire" || def == "ground") return 2.0;
-            if (def == "water" || def == "grass" || def == "dragon" || def == "electric") return 0.5;
+            if (def == "water" || def == "grass" || def == "electric" || def == "dragon") return 0.5;
         }
         // fire
         if (atk == "fire") {
             if (def == "grass") return 2.0;
-            if (def == "water" || def == "ground" || def == "dragon" || def == "fire") return 0.5;
+            if (def == "fire" || def == "water" || def == "ground" || def == "dragon") return 0.5;
         }
         // grass
         if (atk == "grass") {
@@ -129,16 +132,16 @@ private:
         if (atk == "ground") {
             if (def == "fire" || def == "electric") return 2.0;
             if (def == "flying") return 0.0;
-            if (def == "grass") return 0.5;
+            if (def == "grass" || def == "water" || def == "ground") return 0.5;
         }
         // flying
         if (atk == "flying") {
             if (def == "grass") return 2.0;
-            if (def == "electric" || def == "dragon") return 0.5;
+            if (def == "electric" ) return 0.5;
         }
-        // dragon
+        // dragon (other defenses neutral)
         if (atk == "dragon") {
-            if (def == "dragon") return 2.0;
+            // already handled dragon vs dragon above; other defenses neutral
         }
         return 1.0;
     }
